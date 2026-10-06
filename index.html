@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WasteWise AI — Smart Waste Intelligence & Action Platform</title>
+  <meta name="description" content="We don't just identify waste — we convert waste identification into intelligent action." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- React UMD for rewards widget -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin defer></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin defer></script>
+  <script src="rewards.react.js" defer></script>
+</head>
+<body>
+  <div class="bg-orb bg-orb-1" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb-2" aria-hidden="true"></div>
+
+  <header class="navbar">
+    <a href="#home" class="brand" data-nav="home">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="36" height="36">
+          <circle cx="20" cy="20" r="18" fill="#028090" />
+          <path d="M20 8c-1.5 5-8 8-8 14a8 8 0 0016 0c0-6-6.5-9-8-14z" fill="#97BC62" />
+          <path d="M20 14c0 8 4 10 4 14a4 4 0 01-8 0c0-4 4-6 4-14z" fill="#02C39A" />
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>WasteWise AI</strong>
+        <small>Smart Waste Intelligence</small>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" data-nav="home">Home</a>
+      <a href="#scan" data-nav="scan">Scan Waste</a>
+      <a href="#history" data-nav="history">History</a>
+      <a href="#rewards" data-nav="rewards">Rewards</a>
+      <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+      <a href="#about" data-nav="about">About</a>
+    </nav>
+
+    <div class="nav-stats">
+      <div class="eco-chip" title="Eco Score">
+        <i data-lucide="leaf"></i>
+        <span>Eco Score <strong id="navPoints">0</strong></span>
+      </div>
+      <div class="eco-chip streak" title="Daily streak">
+        <i data-lucide="flame"></i>
+        <span>Streak <strong id="navStreak">0</strong></span>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="page-home" class="page active">
+      <div class="hero">
+        <p class="eyebrow">Hackathon demo · Prototype with mocked AI layer</p>
+        <h1>Identify. Act. Recycle. Improve.</h1>
+        <p class="lede">
+          Upload a photo of waste. WasteWise AI classifies it, checks for hazards, and tells you exactly what to do next — then rewards every responsible action.
+        </p>
+        <div class="hero-actions">
+          <a href="#scan" class="btn btn-primary" data-nav="scan">
+            <i data-lucide="scan-line"></i> Scan Waste Now
+          </a>
+          <a href="#dashboard" class="btn btn-ghost" data-nav="dashboard">
+            <i data-lucide="bar-chart-3"></i> View Impact
+          </a>
+        </div>
+        <div class="hero-pills">
+          <span><i data-lucide="brain"></i> Vision classifier</span>
+          <span><i data-lucide="shield-alert"></i> Hazard check</span>
+          <span><i data-lucide="recycle"></i> Action engine</span>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <article class="card feature-card">
+          <div class="icon-wrap"><i data-lucide="camera"></i></div>
+          <h3>See the waste</h3>
+          <p>Snap or upload an image. In production this feeds a CNN image classifier.</p>
+        </article>
+        <article class="card feature-card">
+          <div class="icon-wrap"><i data-lucide="sparkles"></i></div>
+          <h3>Get the action</h3>
+          <p>Bin color, rinse steps, or a hazardous-waste facility — not just a label.</p>
+        </article>
+        <article class="card feature-card">
+          <div class="icon-wrap"><i data-lucide="trophy"></i></div>
+          <h3>Earn eco points</h3>
+          <p>Gamified streaks and levels keep recycling habits going after day one.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SCAN -->
+    <section id="page-scan" class="page">
+      <div class="page-head">
+        <h2>Scan Waste</h2>
+        <p>Upload an image and run the intelligence pipeline.</p>
+      </div>
+
+      <div class="scan-layout">
+        <div class="card upload-card">
+          <input type="file" id="wasteFile" accept="image/*" hidden />
+          <div class="dropzone" id="dropzone" role="button" tabindex="0">
+            <div class="preview-wrap hidden" id="previewWrap">
+              <img id="previewImage" alt="Uploaded waste preview" />
+            </div>
+            <div class="dropzone-empty" id="dropzoneEmpty">
+              <i data-lucide="image-plus"></i>
+              <h3>Upload Waste Image</h3>
+              <p>Click, drag & drop, or choose a photo from your device</p>
+            </div>
+          </div>
+          <div class="upload-actions">
+            <button type="button" class="btn btn-ghost" id="pickImageBtn">
+              <i data-lucide="upload"></i> Upload Waste Image
+            </button>
+            <button type="button" class="btn btn-primary" id="detectBtn" disabled>
+              <i data-lucide="cpu"></i> Detect Waste
+            </button>
+          </div>
+        </div>
+
+        <div class="card result-card" id="resultCard">
+          <div class="result-idle" id="resultIdle">
+            <i data-lucide="scan-search"></i>
+            <p>Results appear here after detection.</p>
+          </div>
+
+          <div class="analyzing hidden" id="analyzing">
+            <div class="radar">
+              <span></span><span></span><span></span>
+            </div>
+            <h3>AI Analyzing…</h3>
+            <p id="analyzeStep">Preparing image tensor…</p>
+            <div class="analyze-bar"><div id="analyzeFill"></div></div>
+          </div>
+
+          <div class="result-body hidden" id="resultBody">
+            <div class="confidence-row">
+              <span class="cat-icon" id="resultIcon"></span>
+              <div>
+                <p class="confidence" id="confidenceText"></p>
+                <h3 id="categoryTitle"></h3>
+              </div>
+            </div>
+
+            <div id="hazardBanner"></div>
+
+            <div class="action-card" id="actionCard"></div>
+
+            <button type="button" class="btn btn-primary btn-block" id="confirmActionBtn">
+              <i data-lucide="check-circle-2"></i> Confirm Disposal Action (+10 Eco Points)
+            </button>
+            <p class="hint" id="confirmHint">Log this action to update history, streak, and your eco score.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="page-history" class="page">
+      <div class="page-head">
+        <h2>Waste History</h2>
+        <p>Every scan and confirmed action is stored locally on this device.</p>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-head">
+          <h3>Category breakdown</h3>
+          <p id="chartCaption">Scan items to see your recycling mix.</p>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="historyChart"></canvas>
+        </div>
+      </div>
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Category</th>
+                <th>Action taken</th>
+                <th>When</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+        <p class="empty-note hidden" id="historyEmpty">No detections yet. Scan your first item on the Scan Waste page.</p>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page">
+      <div class="page-head">
+        <h2>Impact Dashboard</h2>
+        <p>A snapshot of your recycling intelligence over time.</p>
+      </div>
+
+      <div class="level-card card">
+        <div class="level-meta">
+          <span class="level-badge" id="levelBadge">Level 1</span>
+          <p id="levelCopy">Keep scanning to level up.</p>
+        </div>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill" id="levelFill"></div>
+        </div>
+        <p class="progress-label" id="levelProgressLabel">0 / 50 points to next level</p>
+      </div>
+
+      <div class="stats-grid">
+        <article class="card stat-card">
+          <i data-lucide="scan-line"></i>
+          <p>Total Items Scanned</p>
+          <strong id="statItems">0</strong>
+        </article>
+        <article class="card stat-card">
+          <i data-lucide="leaf"></i>
+          <p>Total Eco Points</p>
+          <strong id="statPoints">0</strong>
+        </article>
+        <article class="card stat-card">
+          <i data-lucide="flame"></i>
+          <p>Current Streak</p>
+          <strong id="statStreak">0 days</strong>
+        </article>
+        <article class="card stat-card">
+          <i data-lucide="layers"></i>
+          <p>Most Common Waste Type</p>
+          <strong id="statCommon">—</strong>
+        </article>
+        <article class="card stat-card wide">
+          <i data-lucide="wind"></i>
+          <p>Est. landfill waste avoided</p>
+          <strong id="statKg">0.0 kg</strong>
+          <small>Simple estimate: confirmed items × 0.2 kg. Replace with LCA factors in production.</small>
+        </article>
+      </div>
+    </section>
+
+    <!-- REWARDS -->
+    <section id="page-rewards" class="page">
+      <div class="page-head">
+        <h2>Rewards</h2>
+        <p>Redeem eco points for goodies and donations.</p>
+      </div>
+      <div class="card rewards-grid" id="rewardsGrid">
+        <p class="hint">Loading rewards…</p>
+      </div>
+      <div class="card" id="redeemResult" style="margin-top:12px; display:none;"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="page-about" class="page">
+      <div class="page-head">
+        <h2>About WasteWise AI</h2>
+      </div>
+      <article class="card about-card">
+        <p class="mission">We don't just identify waste — we convert waste identification into intelligent action.</p>
+        <p>
+          Most recycling apps stop at a label. WasteWise AI is built as an <strong>intelligence and action platform</strong>:
+          a vision model identifies the material, a second model flags fire and chemical hazards, and a rules engine
+          tells people the next safe step — rinse, compost, e-waste drop-off, or hazardous-waste facility.
+        </p>
+        <p>
+          This demo is a fully working front-end prototype. Classification is simulated in the browser so judges can
+          exercise the full UX without a GPU backend. Look for comments in <code>script.js</code> marked
+          <code>REAL AI HOOK</code> — that is where a CNN classifier and a hazard/smoke detector would plug in.
+        </p>
+        <ul class="about-list">
+          <li><i data-lucide="check"></i> Identify waste from a photo</li>
+          <li><i data-lucide="check"></i> Act with bin-level guidance</li>
+          <li><i data-lucide="check"></i> Recycle (or divert) correctly</li>
+          <li><i data-lucide="check"></i> Improve habits with points, streaks, and impact stats</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>WasteWise AI · Identify. Act. Recycle. Improve.</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
